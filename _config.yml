@@ -1,16 +1,16 @@
 # Site settings
-title: Website Title
-description: Website short description
+title: 愿做一颗风藤树
+description: Blog of testivy
 baseurl: "" 
 #change the baseurl to "" if you are using it as your user GitHub Pages
-url: "https://yk-liu.github.io"  
+url: "https://testivy.github.io"
 
 
 # GitHub User settings
-username: Username
-github_username: github_username
-user_description: user_description
-user_title: user_title
+username: testivy
+github_username: testivy
+user_description: security researcher
+user_title:
 email: 
 
 # Blog Author settings
