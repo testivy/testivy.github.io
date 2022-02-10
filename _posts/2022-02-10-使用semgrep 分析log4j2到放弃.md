@@ -4,7 +4,7 @@ commentable: true
 Edit: 2018-11-14
 mathjax: true
 mermaid: true
-tags: log4j 漏洞分析
+tags: log4j semgrep
 categories: 漏洞分析
 description: 使用semgrep看看能否找到Sink和Source。
 ---
@@ -50,6 +50,6 @@ rules:
 
 上一步的规则找到了16处的问题，但是一个一个去分析有点多，有必要进一步筛选下。知道JNDI注入会使用JNDI context方式，其中应该都会引入javax.naming.Context 或者 javax.naming.InitialContext 类，而且InitialContext 实现了Context 接口。
 因此继续改造下规则，这次我们引入patterns 关键字来进行限定：
-- (1) 要求调用lookup方法前导入了 ++javax.naming.Context++
-- (2) 要求调用lookup方法前导入了 ++javax.naming.InitialContext++
+- (1) 要求调用lookup方法前导入了 <u>javax.naming.Context</u>
+- (2) 要求调用lookup方法前导入了 <u>javax.naming.InitialContext</u>
 基于上面的两种情况，编写如下规则：
