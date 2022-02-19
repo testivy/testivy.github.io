@@ -10,9 +10,10 @@ description: 通过Proxyman Scripting 功能自定义信息检测脚本，辅助
 ---
 # 题外话
 题外话
-《中华人民共和国数据安全法》已于今年9月1号正式实行，企业在数据的采集、传输、存储、使用和销毁等环节变得更加重视。众多企业下一步的重点工作将是数据的分类分级和数据生命周期管理，尤其和“个保法”紧密关切的个人敏感信息内容。在渗透测试过程中，加强敏感数据“脱敏”鉴别已然成为了我们工作的重点，敏感数据种类那么多，而全人工介入工作量巨大，能否实现半自动化来减轻工作量呢？
+《中华人民共和国数据安全法》已于2021年9月1号正式实行，企业在数据的采集、传输、存储、使用和销毁等环节变得更加重视。众多企业下一步的重点工作将是数据的分类分级和数据生命周期管理，尤其和“个保法”紧密关切的个人敏感信息内容。在渗透测试过程中，加强敏感数据“脱敏”鉴别已然成为了我们工作的重点，敏感数据种类那么多，而全人工介入工作量巨大，能否实现半自动化来减轻工作量呢？
 # Proxyman的Scripting 简单介绍
-Proxyman Scripting 提供了通过JS自定义编写脚本的功能，开发人员可以灵活的操作请求/响应。之前笔者使用它编写了RSA加解密的库，见《Proxyman 从0开始编写RSA Addons》。
+Proxyman Scripting 提供了通过JS自定义编写脚本的功能，开发人员可以灵活的操作请求/响应。之前笔者使用它编写了RSA加解密的库，见 [Proxyman 从0开始编写RSA Addons](https://mp.weixin.qq.com/s?__biz=MzIzMjYzNTQwMA==&mid=2247483967&idx=1&sn=9fde057d3133c49a1f403ae4500ddc9d&chksm=e890af58dfe7264e6f9f9082210624b2f4f76a8522624016793acb3be7e34e2ce6b4a4a7122e&scene=21#wechat_redirect) 。
+
 Scripting 特点：
 1.通过JS代码实现Map Local / Map Remote / Breakpoint
 
@@ -33,7 +34,7 @@ Scripting 特点：
 <center>（以上图片来自:https://docs.proxyman.io/scripting/script)</center>
 
 # 检测脚本介绍
-之前使用了一款BurpSuite 的插件—Unexpected_information(https://github.com/ScriptKid-Beta/Unexpected_information），能够提取一些有用的信息，也挺好用。但是笔者觉得Proxyman 的搜索功能强大，用的比较顺手，但还想用Burp的这款插件，因此都是把Proxyman 的流量再代理到Burp上，浏览器上没啥大问题，但是遇到一些移动APP的流量在Proxyman到Burp的时候总是因为各种证书的问题导致Burp 无法建立https链接，索性自己用Proxyman Scripting 实现类似的功能。
+之前使用了一款BurpSuite 的插件—Unexpected_information(https://github.com/ScriptKid-Beta/Unexpected_information），能够提取一些有用的信息，也挺好用。但是笔者觉得Proxyman 的搜索功能强大，用的比较顺手，索性自己用Proxyman Scripting 实现类似的功能。
 关注的点：
 ## 信息提取步骤： 
 一、编写规则
@@ -57,10 +58,10 @@ writeToFile(interface_no_duplicate.toString().replaceAll(",", "\r\n"), "~/Deskto
 四、效果展示
 使用Comment 将接口列表展示出来
 
-![](../assets/.2022-02-19-巧用Proxyman Scripting 编写信息收集脚本/9241b39d.png)
+![](../assets/2022-02-19-巧用Proxyman Scripting 编写信息收集脚本/9241b39d.png)
 
 # 整体效果
 
-![](../assets/.2022-02-19-巧用Proxyman Scripting 编写信息收集脚本/c883d513.png)
+![](../assets/2022-02-19-巧用Proxyman Scripting 编写信息收集脚本/c883d513.png)
 
 
