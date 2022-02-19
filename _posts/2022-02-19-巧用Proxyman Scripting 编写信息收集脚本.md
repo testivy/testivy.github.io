@@ -35,27 +35,32 @@ Scripting 特点：
 
 # 检测脚本介绍
 之前使用了一款BurpSuite 的插件—Unexpected_information(https://github.com/ScriptKid-Beta/Unexpected_information），能够提取一些有用的信息，也挺好用。但是笔者觉得Proxyman 的搜索功能强大，用的比较顺手，索性自己用Proxyman Scripting 实现类似的功能。
-关注的点：
-## 信息提取步骤： 
-一、编写规则
+
+## 信息提取步骤
+### 一、编写规则
 
 笔者所在公司前端应用都是用Webpack 打包的，因此接口提取和收集自然水到渠成，提取规则也很容易编写出来。 其它信息—例如手机号、邮箱等提取方式一样。
-let path_reg = /("|')(\/[0-9a-zA-Z.]).*?("|')|(["|'](\/v[1-9].*?)")|(["|'](\/api.*?)")/g;
+```javascript 
+ let path_reg = /("|')(\/[0-9a-zA-Z.]).*?("|')|(["|'](\/v[1-9].*?)")|(["|'](\/api.*?)")/g;
+```
 这里提取了双引号或者单引号包裹的 /开头的字母数字，例如"/path/xx"，同时也考虑了一些开发经常写的接口——"v1/path/xx" 和诸如"/api/path/xx"
 提取到这些接口后，可以写入到文件中进行后续自动化扫描，也可以加颜色显示或者将接口信息写入到Comment 中（备注：Proxyman没有像Burpsuite那样增加tab的功能，但是我们可以使用Comment 功能，将感兴趣的内容写入到Comment中，也算是一种办法吧）
 
-二、接口去重
+### 二、接口去重
 
 由于接口提取后会存在重复的接口，最好能够去重后再展示，可以使用Set进行去重。
+```javascript
 var interface_no_duplicate = [...new Set(interface)];
+ ```
 
-三、突出展示/写文件
+### 三、突出展示/写文件
 
 通过  response.color = "yellow"; 将匹配到的请求标记为黄色，目前Proxyman 支持red, blue, yellow, purple, gray, green 共6种颜色。
-也可以将提取的内容写到文件里
+也可以将提取的内容写到文件里。
+```
 writeToFile(interface_no_duplicate.toString().replaceAll(",", "\r\n"), "~/Desktop/sample/" + host_from_referer[2] + context.flow.id + ".txt");
-
-四、效果展示
+```
+### 四、效果展示
 使用Comment 将接口列表展示出来
 
 ![](../assets/2022-02-19-巧用Proxyman Scripting 编写信息收集脚本/9241b39d.png)
