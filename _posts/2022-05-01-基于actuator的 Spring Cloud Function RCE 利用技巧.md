@@ -33,3 +33,13 @@ Spring Coud Function 官方在3.2.3版本修复了之前的commit为dc5128b 的S
 
 ![](../assets/Spring Cloud Function 漏洞分析_images/83163e60.png)
 
+跟进到FunctionProperties这个类，它通过@ConfigurationProperties(prefix = FunctionProperties.PREFIX) 注解绑定相应的外部配置参数的值，因此getRoutingExpression()方法就能够获取到
+application.properties(yaml)中对应的”spring.cloud.function.routingExpression“的值。
+
+因此如果更改了配置文件参数如下，则同样能够触发SPEL注入漏洞。
+```jsregexp
+spring.cloud.function.definition=functionRouter
+spring.cloud.function.routingExpression=T(java.lang.Runtime).getRuntime().exec("calc")
+```
+
+
