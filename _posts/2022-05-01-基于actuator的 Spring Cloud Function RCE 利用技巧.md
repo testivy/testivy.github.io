@@ -9,7 +9,7 @@ categories: 渗透测试
 description: 如何通过actuator 在最新版本进行表达式注入
 ---
 
-#背景
+# 背景
 
 3月份的时候互联网上披露了Spring Cloud Function SPEL表达式注入漏洞，也就是Spring Cloud Function  从3.0.0.RELEASE 到3.2版本都存在一个表达式注入漏洞，这个漏洞也随后
 在3.2.3版本被官方修复。既然我们无法通过Header注入，那么能否有其它办法改变spring.cloud.function.routing-expression的值从而执行代码呢？
@@ -18,15 +18,15 @@ description: 如何通过actuator 在最新版本进行表达式注入
 
 Spring Coud Function 官方在3.2.3版本修复了之前的commit为dc5128b 的SPEL注入漏洞，具体代码改动
 
-![](../assets/SpringCloudFunction漏洞分析_images/913756d2.png)
+![](../assets/2022-05-01-基于actuator的 Spring Cloud Function RCE 利用技巧_images/87bdc90e.png)
 
 可以看到重载了functionFromExpression方法，通过判断isViaHeader执行不同的处理过程，如果为真，就用SimpleEvaluationContext处理header 里面的输入，否则才用StandardEvaluationContext 处理。
 
-![](../assets/Spring Cloud Function 漏洞分析_images/03af233d.png)
+![](../assets/2022-05-01-基于actuator的 Spring Cloud Function RCE 利用技巧_images/517efb5c.png)
 
 在取Header头中的spring.cloud.function.routing-expression 是调用了functionFromExpression(StringroutingExpression, Objectinput, booleanisViaHeader)，但是从配置文件中取这个字段的时候还是调用的functionFromExpression(StringroutingExpression, Objectinput)这个方法就是造成SPEL解析命令执行漏洞的关键。
 
-![](../assets/Spring Cloud Function 漏洞分析_images/9b736cda.png)
+![](../assets/2022-05-01-基于actuator的 Spring Cloud Function RCE 利用技巧_images/1dd2a033.png)
 
 因此理论上只要能够控制functionProperties.getRoutingExpression() 的值应该也能够触发这个漏洞。
 进一步看下functionProperties类中的getRoutingExpression()方法
@@ -75,7 +75,7 @@ User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Fi
 ![](../assets/2022-05-01-基于actuator的 Spring Cloud Function RCE 利用技巧_images/2c635085.png)
 
 - 3.最后通过请求/functionRouter 路由执行routingExpression 表达式
-- 
+
 ```jsregexp
 POST /functionRouter/qqq HTTP/1.1
 Host: 127.0.0.1:9000
@@ -88,6 +88,7 @@ aaa
 
 # tips
 actuator 2.x 需要将env 和refresh 端点暴露出来，还有就是env 端点可写的特性是在Spring Cloud才具有的。
+
 ```
 management.endpoint.refresh.enabled=true
 management.endpoint.env.post.enabled=true
@@ -95,6 +96,7 @@ management.endpoints.web.exposure.include=env,restart,refresh
 ```
 
 另外如果遇到了“POST /actuator/env returns 405 method not allowed”，表示env 端点不允许POST提交数据。这个是因为Spring Cloud 在Hoxton.SR3版本已经将env 端点的可写性做了一些改变（https://github.com/spring-projects/spring-boot/issues/20509），需要改成：
+
 ```
 management.endpoint.refresh.enabled=true
 management.endpoint.env.post.enabled=true
